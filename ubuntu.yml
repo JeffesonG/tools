@@ -34,6 +34,7 @@
           - krita
           - jq
           - mtr
+          - software-properties-common
 
     - block:
       - name: Verify if Oh-My-zsh is installed
