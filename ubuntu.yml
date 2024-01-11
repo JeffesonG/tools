@@ -132,10 +132,27 @@
   
       - name: Install Minikube
         command: >
-          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && 
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-linux-amd64 && 
           chmod +x minikube && mv minikube /usr/local/bin/
   
       - name: Install Kubectl
         command: >
-          curl -LO "https://dl.k8s.io/release/v1.22.2/bin/linux/amd64/kubectl" && 
+          curl -LO "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl" && 
           chmod +x kubectl && mv kubectl /usr/local/bin/
+    - block:
+      - name: Install VirtualBox GPG key
+        become: true
+        apt_key: 
+          url: 'https://www.virtualbox.org/download/oracle_vbox_2016.asc'
+          state: present
+      - name: Add VirtualBox APT repository
+        become: true
+        apt_repository:
+          repo: 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib'
+          state: present
+          filename: virtualbox
+      - name: Install VirtualBox
+        become: true
+        apt:
+          name: virtualbox-6.1
+          state: present
